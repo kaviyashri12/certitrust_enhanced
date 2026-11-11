@@ -1,0 +1,44 @@
+{% extends "base_admin.html" %}
+{% block title %}Issue Document – CertiTrust{% endblock %}
+{% block page_title %}Issue Document{% endblock %}
+
+{% block content %}
+<div style="max-width: 520px;">
+    <div class="card" style="padding: 32px;">
+        <h2 style="margin-bottom: 6px;">Issue Certificate</h2>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">
+            <strong>{{ student.name }}</strong><br>
+            {{ student.register_no }} · {{ student.programme }}
+        </p>
+
+        <form method="POST">
+            <div style="margin-bottom: 18px;">
+                <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Document Type</label>
+                <select name="cert_type" id="certType" onchange="toggleSem()" required
+                        style="width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:8px;">
+                    <option value="semester">Semester Marksheet</option>
+                    <option value="consolidated">Consolidated Marksheet (All Semesters)</option>
+                </select>
+            </div>
+
+            <div id="semDiv" style="margin-bottom: 24px;">
+                <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Semester</label>
+                <select name="semester" style="width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:8px;">
+                    {% for s in semesters %}
+                    <option value="{{ s }}">Semester {{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Generate QR & Issue</button>
+        </form>
+    </div>
+</div>
+<script>
+function toggleSem() {
+    document.getElementById('semDiv').style.display =
+        document.getElementById('certType').value === 'semester' ? 'block' : 'none';
+}
+toggleSem();
+</script>
+{% endblock %}

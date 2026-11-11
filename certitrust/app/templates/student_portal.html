@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Portal – CertiTrust</title>
+<style>
+ body{font-family:system-ui,sans-serif;background:#f8fafc;color:#0f172a;margin:0}
+ .wrap{max-width:640px;margin:48px auto;padding:0 20px}
+ .card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:28px;margin-bottom:20px}
+ input,button{font:inherit;padding:11px 14px;border-radius:8px;border:1px solid #cbd5e1;width:100%;box-sizing:border-box;margin-bottom:12px}
+ button{background:#6d28d9;color:#fff;border:none;font-weight:600;cursor:pointer}
+ button.alt{background:#fff;color:#6d28d9;border:2px solid #6d28d9}
+ .flash{background:#fee2e2;color:#991b1b;padding:12px 16px;border-radius:10px;margin-bottom:16px}
+ .row{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9}
+ .row form{margin:0}.row button{width:auto;margin:0;padding:8px 14px}
+ a{color:#6d28d9}
+</style></head><body><div class="wrap">
+<h1>◆ CertiTrust Student Portal</h1>
+{% with messages = get_flashed_messages(with_categories=true) %}{% for c,m in messages %}<div class="flash">{{ m }}</div>{% endfor %}{% endwith %}
+
+{% if not summary %}
+<div class="card">
+  <p style="color:#64748b">Enter your register number and date of birth to download your digitally signed marksheet.</p>
+  <form method="POST">
+    <input type="hidden" name="action" value="login">
+    <input name="reg_no" placeholder="Register number" required autocomplete="off">
+    <input type="date" name="dob" required>
+    <button type="submit">Continue</button>
+  </form>
+  <a href="{{ url_for('main.index') }}">← Home</a>
+</div>
+{% else %}
+<div class="card">
+  <h2 style="margin-top:0">{{ summary.student.name }}</h2>
+  <p style="color:#64748b">{{ summary.student.register_no }} · {{ summary.student.programme }}</p>
+  <p>CGPA: <b>{{ summary.cgpa if summary.cgpa is not none else '-' }}</b></p>
+  {% for sem in summary.semesters %}
+  <div class="row"><span>Semester {{ sem.semester }} (SGPA {{ sem.sgpa }})</span>
+    <form method="POST"><input type="hidden" name="action" value="generate"><input type="hidden" name="scope" value="{{ sem.semester }}"><button class="alt" type="submit">Download</button></form></div>
+  {% else %}<p>No results published yet.</p>{% endfor %}
+  {% if summary.semesters %}
+  <form method="POST" style="margin-top:16px"><input type="hidden" name="action" value="generate"><input type="hidden" name="scope" value="consolidated"><button type="submit">Download consolidated marksheet</button></form>
+  {% endif %}
+  <a href="{{ url_for('auto.student_logout') }}">Log out</a>
+</div>
+{% endif %}
+</div></body></html>

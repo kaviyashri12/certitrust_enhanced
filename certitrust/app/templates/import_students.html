@@ -1,0 +1,50 @@
+{% extends "base_admin.html" %}
+{% block title %}Bulk Import – CertiTrust{% endblock %}
+{% block page_title %}Bulk Import (by Register Number){% endblock %}
+{% block content %}
+<div class="card" style="padding:28px; max-width:900px; margin-bottom:24px;">
+  <h2 style="margin-bottom:6px;">Upload student data</h2>
+  <p style="color:var(--text-muted); font-size:.9rem; margin-bottom:18px;">
+    One row per student-course. Students and courses are matched by <b>register_no</b> / <b>course_code</b>, so re-uploading
+    updates records instead of duplicating them. Batch year and programme are auto-derived from the register number when blank.
+    <a href="{{ url_for('auto.import_template') }}">Download template (.csv)</a>
+  </p>
+  <form method="POST" enctype="multipart/form-data">
+    <input type="file" name="datafile" accept=".csv,.xlsx" required style="margin-bottom:14px;"><br>
+    <label style="display:block; margin-bottom:8px;"><input type="checkbox" name="dry_run" value="1" checked> Preview only (validate, save nothing)</label>
+    <label style="display:block; margin-bottom:16px;"><input type="checkbox" name="auto_issue" value="1"> After import, auto-issue signed marksheets for imported students</label>
+    <button class="btn btn-primary" type="submit">Process file</button>
+  </form>
+</div>
+
+{% if report %}
+<div class="card" style="padding:28px; max-width:900px; margin-bottom:24px;">
+  <h2>{{ 'Preview' if report.dry_run else 'Import result' }}</h2>
+  <p style="margin:10px 0;">
+    Rows: <b>{{ report.rows }}</b> · New students: <b>{{ report.students_created }}</b> ·
+    Updated: <b>{{ report.students_updated }}</b> · New courses: <b>{{ report.courses_created }}</b> ·
+    Grades: <b>{{ report.grades_saved }}</b> · Errors: <b>{{ report.errors|length }}</b>
+  </p>
+  {% if report.dry_run %}<p style="color:var(--text-muted);">Nothing was saved. Untick “Preview only” and upload again to commit.</p>{% endif %}
+  {% if report.errors %}
+  <table><thead><tr><th>Row</th><th>Register No</th><th>Problem</th></tr></thead><tbody>
+    {% for e in report.errors %}<tr><td>{{ e.row }}</td><td>{{ e.register_no }}</td><td>{{ e.error }}</td></tr>{% endfor %}
+  </tbody></table>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if issue_report %}
+<div class="card" style="padding:28px; max-width:900px; margin-bottom:24px;">
+  <h2>Auto-issue result</h2>
+  <p>Issued: <b>{{ issue_report.issued|length }}</b> · Already up to date: <b>{{ issue_report.up_to_date|length }}</b> · Failed: <b>{{ issue_report.failed|length }}</b></p>
+  {% for f in issue_report.failed %}<p style="color:#991b1b;">{{ f.register_no }}: {{ f.error }}</p>{% endfor %}
+</div>
+{% endif %}
+
+<div class="card" style="padding:28px; max-width:900px;">
+  <h2 style="margin-bottom:8px;">Issue all pending</h2>
+  <p style="color:var(--text-muted); font-size:.9rem; margin-bottom:14px;">Signs a consolidated marksheet for every student whose grades changed or who has none yet. Up-to-date students are skipped.</p>
+  <form method="POST" action="{{ url_for('auto.bulk_issue') }}"><button class="btn btn-primary" type="submit">Issue pending marksheets</button></form>
+</div>
+{% endblock %}

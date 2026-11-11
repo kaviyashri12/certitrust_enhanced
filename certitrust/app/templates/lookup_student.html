@@ -1,0 +1,57 @@
+{% extends "base_admin.html" %}
+{% block title %}Lookup – CertiTrust{% endblock %}
+{% block page_title %}Student Lookup{% endblock %}
+{% block content %}
+<div class="card" style="padding:24px; max-width:900px; margin-bottom:24px;">
+  <form method="GET" style="display:flex; gap:12px;">
+    <input type="text" name="reg_no" value="{{ reg }}" placeholder="Enter register number e.g. 61782323102081" required
+      style="flex:1; padding:11px 14px; border:1px solid var(--border); border-radius:8px;">
+    <button class="btn btn-primary" type="submit">Fetch</button>
+  </form>
+</div>
+
+{% if summary %}
+<div class="card" style="padding:24px; max-width:900px; margin-bottom:24px;">
+  <h2>{{ summary.student.name }}</h2>
+  <p style="color:var(--text-muted);">{{ summary.student.register_no }} · {{ summary.student.programme }}</p>
+  <p style="margin-top:8px; font-size:.9rem;">
+    Batch {{ summary.student.batch_year or '-' }} · Expected graduation {{ summary.derived.graduation_year or '-' }} ·
+    DOB {{ summary.student.date_of_birth or 'not set' }} · CGPA <b>{{ summary.cgpa if summary.cgpa is not none else '-' }}</b>
+  </p>
+</div>
+
+{% for sem in summary.semesters %}
+<div class="card" style="padding:24px; max-width:900px; margin-bottom:18px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+    <h3>Semester {{ sem.semester }} &nbsp;<span style="font-weight:400; color:var(--text-muted);">SGPA {{ sem.sgpa }}</span></h3>
+    <form method="POST" action="{{ url_for('auto.auto_issue_route', reg_no=summary.student.register_no) }}">
+      <input type="hidden" name="scope" value="{{ sem.semester }}">
+      <button class="btn btn-outline btn-sm" type="submit">Issue Sem {{ sem.semester }}</button>
+    </form>
+  </div>
+  <table><thead><tr><th>Code</th><th>Title</th><th>Credits</th><th>Grade</th></tr></thead><tbody>
+    {% for c in sem.courses %}<tr><td>{{ c.course_code }}</td><td>{{ c.course_name }}</td><td>{{ c.credits }}</td><td>{{ c.grade }}</td></tr>{% endfor %}
+  </tbody></table>
+</div>
+{% else %}
+<div class="card" style="padding:24px; max-width:900px;">No grades yet. <a href="{{ url_for('auto.import_students') }}">Import them</a>.</div>
+{% endfor %}
+
+{% if summary.semesters %}
+<form method="POST" action="{{ url_for('auto.auto_issue_route', reg_no=summary.student.register_no) }}" style="margin-bottom:24px;">
+  <input type="hidden" name="scope" value="consolidated">
+  <button class="btn btn-primary" type="submit">Issue consolidated marksheet</button>
+</form>
+{% endif %}
+
+<div class="card" style="padding:24px; max-width:900px;">
+  <h3 style="margin-bottom:10px;">Issued certificates</h3>
+  <table><thead><tr><th>#</th><th>Type</th><th>Date</th><th>Status</th><th></th></tr></thead><tbody>
+    {% for c in summary.certificates %}
+    <tr><td>{{ c.id }}</td><td>{{ c.certificate_type }}</td><td>{{ c.issue_date }}</td><td>{{ c.status }}</td>
+        <td><a href="{{ url_for('auto.admin_cert_pdf', cert_id=c.id) }}">PDF</a></td></tr>
+    {% else %}<tr><td colspan="5" style="color:var(--text-muted);">None yet</td></tr>{% endfor %}
+  </tbody></table>
+</div>
+{% endif %}
+{% endblock %}

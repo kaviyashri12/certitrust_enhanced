@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CertiTrust – Field-Level Tamper-Proof Certificate Verification</title>
+    <style>
+        :root {
+            --primary: #6d28d9;
+            --primary-light: #8b5cf6;
+            --dark: #0f172a;
+            --bg: #f8fafc;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+
+        .navbar { background: white; border-bottom: 1px solid #e2e8f0; padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .logo { font-weight: 700; font-size: 1.25rem; color: var(--dark); }
+        .logo span { color: var(--primary); }
+        .nav-links a { margin-left: 24px; text-decoration: none; color: var(--muted); font-weight: 500; font-size: 0.95rem; }
+        .nav-links a:hover { color: var(--primary); }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 22px; border-radius: 10px; font-weight: 600; font-size: 0.95rem; text-decoration: none; transition: all 0.2s; border: none; cursor: pointer; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #5b21b6; transform: translateY(-1px); }
+        .btn-outline { background: white; color: var(--primary); border: 2px solid var(--primary); }
+        .btn-outline:hover { background: #f5f3ff; }
+
+        .hero { max-width: 1100px; margin: 0 auto; padding: 80px 24px 60px; text-align: center; }
+        .hero h1 { font-size: 3rem; font-weight: 800; line-height: 1.15; margin-bottom: 20px; }
+        .hero h1 span { color: var(--primary); }
+        .hero p { font-size: 1.2rem; color: var(--muted); max-width: 640px; margin: 0 auto 36px; line-height: 1.6; }
+        .hero-btns { display: flex; gap: 16px; justify-content: center; }
+
+        .section { max-width: 1100px; margin: 0 auto; padding: 40px 24px 60px; }
+        .section-title { text-align: center; font-size: 1.75rem; font-weight: 700; margin-bottom: 12px; }
+        .section-sub { text-align: center; color: var(--muted); margin-bottom: 40px; }
+
+        .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .feature-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 28px; transition: all 0.2s; }
+        .feature-card:hover { box-shadow: 0 12px 30px rgba(109,40,217,0.08); transform: translateY(-3px); }
+        .feature-icon { width: 48px; height: 48px; background: #f5f3ff; color: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 16px; }
+        .feature-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+        .feature-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
+
+        .workflow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 20px; }
+        .wf-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; text-align: center; position: relative; }
+        .wf-num { width: 36px; height: 36px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; margin: 0 auto 14px; }
+        .wf-card h4 { font-size: 0.95rem; margin-bottom: 6px; }
+        .wf-card p { font-size: 0.8rem; color: var(--muted); }
+
+        .cta { background: linear-gradient(135deg, #6d28d9, #8b5cf6); color: white; border-radius: 20px; padding: 48px; text-align: center; margin: 40px auto; max-width: 1100px; }
+        .cta h2 { font-size: 1.8rem; margin-bottom: 12px; }
+        .cta p { opacity: 0.9; margin-bottom: 28px; }
+        .cta .btn { background: white; color: var(--primary); }
+        .cta .btn:hover { background: #f5f3ff; }
+
+        footer { text-align: center; padding: 32px; color: var(--muted); font-size: 0.875rem; border-top: 1px solid #e2e8f0; margin-top: 40px; }
+
+        @media (max-width: 768px) {
+            .features, .workflow { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">◆ <span>CertiTrust</span></div>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#workflow">Workflow</a>
+            <a href="{{ url_for('main.verify') }}">Verify</a>
+            <a href="{{ url_for('auto.student_portal') }}">Student Portal</a>
+            <a href="{{ url_for('main.admin_login') }}" class="btn btn-primary" style="padding:8px 18px; margin-left:16px;">Admin Login</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Field-Level Tamper-Proof<br><span>Academic Certificates</span></h1>
+        <p>CertiTrust uses Merkle trees and digital signatures so anyone can verify a certificate offline and instantly see exactly which field was altered.</p>
+        <div class="hero-btns">
+            <a href="{{ url_for('main.verify') }}" class="btn btn-primary">Verify Certificate</a>
+            <a href="{{ url_for('main.admin_login') }}" class="btn btn-outline">College Admin Portal</a>
+        </div>
+    </section>
+
+    <section class="section" id="features">
+        <h2 class="section-title">Why CertiTrust?</h2>
+        <p class="section-sub">Built for real academic institutions that need trust without complexity</p>
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🔗</div>
+                <h3>Field-Level Integrity</h3>
+                <p>Every field (Name, Register No, Grades, CGPA) is hashed individually and combined into a Merkle tree. Tampering is localized instantly.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Self-Verifying QR</h3>
+                <p>The QR carries original field values + institution signature. No server lookup required for verification.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>Offline & Lightweight</h3>
+                <p>Uses only RSA + SHA-256. No blockchain. Works for small colleges that cannot maintain heavy PKI infrastructure.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="workflow">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-sub">Simple issuance. Powerful verification.</p>
+        <div class="workflow">
+            <div class="wf-card">
+                <div class="wf-num">1</div>
+                <h4>Enter Marks</h4>
+                <p>Admin enters student details and semester grades</p>
+            </div>
+            <div class="wf-card">
+                <div class="wf-num">2</div>
+                <h4>Build Merkle Tree</h4>
+                <p>Each field is hashed and combined into a single root</p>
+            </div>
+            <div class="wf-card">
+                <div class="wf-num">3</div>
+                <h4>Sign & QR</h4>
+                <p>Root is signed with college private key and embedded in QR</p>
+            </div>
+            <div class="wf-card">
+                <div class="wf-num">4</div>
+                <h4>Verify Anywhere</h4>
+                <p>Anyone scans QR → signature check → exact field mismatches shown</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="cta">
+        <h2>Ready to issue tamper-proof certificates?</h2>
+        <p>Login to the College Admin Portal to start issuing secure marksheets.</p>
+        <a href="{{ url_for('main.admin_login') }}" class="btn">Go to Admin Portal</a>
+    </div>
+
+    <footer>
+        CertiTrust · Sona College of Technology · U23CS704 Mini Project
+    </footer>
+</body>
+</html>

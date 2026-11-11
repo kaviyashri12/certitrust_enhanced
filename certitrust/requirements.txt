@@ -1,0 +1,10 @@
+Flask
+pycryptodome
+qrcode[pil]
+Pillow
+opencv-python
+pytesseract
+pdf2image
+reportlab
+numpy
+openpyxl

@@ -1,0 +1,123 @@
+{% extends "base_admin.html" %}
+{% block title %}Add Student – CertiTrust{% endblock %}
+{% block page_title %}Add Student{% endblock %}
+
+{% block content %}
+<div style="max-width: 860px;">
+    <div class="card" style="padding: 32px;">
+        <h2 style="margin-bottom: 8px;">Add New Student</h2>
+        <p style="color: var(--text-muted); margin-bottom: 28px; font-size: 0.9rem;">Enter student personal and academic
+            details</p>
+
+        <form method="POST">
+            <!-- Personal Information -->
+            <h3 style="font-size: 1rem; margin-bottom: 16px; color: var(--primary);">Personal Information</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px;">
+                <div>
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Full Name
+                        *</label>
+                    <input type="text" name="name" required placeholder="LOKESHWARAN R"
+                        style="width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:8px; font-size:0.9rem;">
+                </div>
+                <div>
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Register Number
+                        *</label>
+                    <input type="text" name="register_no" required placeholder="61782323102081"
+                        style="width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:8px; font-size:0.9rem;">
+                </div>
+                <div>
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Date of
+                        Birth</label>
+                    <input type="date" name="date_of_birth"
+                        style="width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:8px; font-size:0.9rem;">
+                </div>
+                <div>
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Gender</label>
+                    <select name="gender"
+                        style="width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:8px; font-size:0.9rem;">
+                        <option value="">Select Gender</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Email</label>
+                    <input type="email" name="email" placeholder="student@sonatech.ac.in"
+                        style="width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:8px; font-size:0.9rem;">
+                </div>
+                <div>
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Phone</label>
+                    <input type="text" name="phone" placeholder="9876543210"
+                        style="width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:8px; font-size:0.9rem;">
+                </div>
+            </div>
+
+            <!-- Academic Information -->
+            <h3 style="font-size: 1rem; margin-bottom: 16px; color: var(--primary);">Academic Information</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px;">
+                <div style="grid-column: 1 / -1;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Programme /
+                        Department *</label>
+                    <select name="programme" required
+                        style="width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:8px; font-size:0.9rem;">
+                        <option value="">Select Department</option>
+                        <option>B.E. Computer Science and Engineering</option>
+                        <option>B.Tech Information Technology</option>
+                        <option>B.E. Electronics and Communication Engineering</option>
+                        <option>B.E. Electrical and Electronics Engineering</option>
+                        <option>B.E. Mechanical Engineering</option>
+                        <option>B.E. Civil Engineering</option>
+                    </select>
+                </div>
+                <div>
+                    <label
+                        style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Regulation</label>
+                    <input type="text" name="regulation" placeholder="2023"
+                        style="width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:8px; font-size:0.9rem;">
+                </div>
+                <div>
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">Batch /
+                        Admission Year</label>
+                    <input type="number" name="batch_year" placeholder="2023"
+                        style="width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:8px; font-size:0.9rem;">
+                </div>
+
+                <div>
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px;">
+                        Graduation / Passed Out Year
+                    </label>
+                    <input type="number" id="graduation_year" name="graduation_year"
+                        placeholder="Automatically calculated" readonly
+                        style="width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:8px; font-size:0.9rem; background:#f8f9fc;">
+                    <small style="color:var(--text-muted); font-size:0.75rem;">
+                        Automatically calculated as Admission Year + 4
+                    </small>
+                </div>
+
+            </div>
+
+            <div style="display:flex; gap:12px; margin-top:10px;">
+                <button type="submit" class="btn btn-primary">Save Student</button>
+                <a href="{{ url_for('main.admin_dashboard') }}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const batchYearInput = document.querySelector('input[name="batch_year"]');
+    const graduationYearInput = document.getElementById('graduation_year');
+
+    batchYearInput.addEventListener('input', function () {
+        const admissionYear = parseInt(this.value);
+
+        if (!isNaN(admissionYear) && admissionYear >= 1900) {
+            graduationYearInput.value = admissionYear + 4;
+        } else {
+            graduationYearInput.value = '';
+        }
+    });
+</script>
+
+{% endblock %}
